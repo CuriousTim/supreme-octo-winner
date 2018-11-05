@@ -1,19 +1,16 @@
-import sqlite3
+from user import *
 
-conn = sqlite3.connect('example.db')
-c = conn.cursor()
-
-# Create table
-c.execute('''
-          CREATE TABLE users
-          (
-              username varchar[255],
-              password varchar[255]
-          )
-          ''')
+# Create instance of user manager to interact with user table in database
+userManager = UserManager('example.db')
 
 # Insert a fake user
-c.execute('INSERT INTO users VALUES ("root", "password")')
+userManager.createUser('root', 'password')
 
-for row in c.execute('SELECT * FROM users'):
-    print(row)
+# Find a user
+print(userManager.findByUsername('root'))       # expected value ('root', 'password')
+print(userManager.findByUsername('student'))    # expected value ()
+
+# Verify a user's password
+print(userManager.verifyPassword('root', 'password'))           # expected value True
+print(userManager.verifyPassword('root', ''))                   # expected value False
+print(userManager.verifyPassword('student', 'hacktheplanet'))   # expected value False
